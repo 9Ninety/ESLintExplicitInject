@@ -1,0 +1,40 @@
+{
+  "name": "eslint-plugin-explicit-inject",
+  "version": "1.0.0",
+  "description": "ESLint rule enforcing explicit @Inject() on constructor parameters in @Injectable() classes",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/9Ninety/ESLintExplicitInject.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc",
+    "lint": "eslint src/",
+    "lint:sample": "eslint test-sample/"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/utils": "^8.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.1.0",
+    "@typescript-eslint/parser": "^8.58.0",
+    "@typescript-eslint/utils": "^8.58.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "eslint",
+    "di",
+    "inject"
+  ],
+  "author": "9",
+  "license": "GPL-2.0-Only",
+  "packageManager": "pnpm@10.28.0"
+}
