@@ -1,5 +1,4 @@
 import type { TSESLint } from "@typescript-eslint/utils";
-import tseslintParser from "@typescript-eslint/parser";
 import { requireInjectDecorator } from "./rules/require-inject-decorator.js";
 
 const plugin = {
@@ -18,9 +17,6 @@ plugin.configs.recommended = {
     "explicit-inject": plugin,
   },
   files: ["**/*.ts"],
-  languageOptions: {
-    parser: tseslintParser,
-  },
   rules: {
     "explicit-inject/require-inject-decorator": "error",
   },
