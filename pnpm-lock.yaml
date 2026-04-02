@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      eslint-plugin-explicit-inject:
-        specifier: 'link:'
-        version: 'link:'
     devDependencies:
       '@typescript-eslint/utils':
         specifier: ^8.58.0
