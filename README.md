@@ -1,6 +1,6 @@
 # eslint-plugin-explicit-inject
 
-ESLint rule that enforces explicit `@Inject()` on constructor parameters of `@Injectable()` classes in codebase.
+ESLint rule that enforces explicit `@Inject()` on constructor parameters of DI-decorated classes.
 
 ## Setup
 
@@ -37,7 +37,28 @@ class MyService {
 
 Any decorator on a parameter counts as explicit (not just `@Inject`), so `@Optional()`, `@Inject()`, custom decorators all pass.
 
-Classes without `@Injectable()` are ignored.
+By default, only `@Injectable()` classes are checked.
+
+## Configuration
+
+The rule accepts a `decorators` option to specify which class decorators trigger the check. This is useful for NestJS projects where `@Controller()`, `@Resolver()`, and other decorators also use constructor injection:
+
+```js
+import explicitInjectPlugin from "eslint-plugin-explicit-inject";
+
+export default [
+  {
+    ...explicitInjectPlugin.configs.recommended,
+    rules: {
+      "explicit-inject/require-inject-decorator": ["error", {
+        decorators: ["Injectable", "Controller", "Resolver"]
+      }]
+    }
+  }
+];
+```
+
+When no `decorators` option is provided, it defaults to `["Injectable"]`.
 
 ## Local development
 

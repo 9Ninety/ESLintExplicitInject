@@ -1,4 +1,4 @@
-## Requirements
+## ADDED Requirements
 
 ### Requirement: Accept a configurable list of class decorator names
 The rule SHALL accept an optional `decorators` option: an array of strings specifying which class decorator names trigger the rule. The default value SHALL be `["Injectable"]`.
@@ -23,6 +23,8 @@ The rule SHALL accept an optional `decorators` option: an array of strings speci
 - **AND** there are three classes, one with each decorator, each with a bare constructor parameter
 - **THEN** the rule reports one error per class (3 total)
 
+## MODIFIED Requirements
+
 ### Requirement: Report undecorated constructor parameters in Injectable classes
 The rule SHALL report an error on every constructor parameter that has no decorators in a class decorated with any of the configured decorator names (defaulting to `@Injectable()`).
 
@@ -42,26 +44,7 @@ The rule SHALL report an error on every constructor parameter that has no decora
 - **WHEN** a class has a decorator matching the configured list and a constructor with zero parameters
 - **THEN** the rule reports no errors
 
-### Requirement: Skip parameters that have any decorator
-The rule SHALL NOT report an error on constructor parameters that already have one or more decorators.
-
-#### Scenario: Parameter with @Inject decorator
-- **WHEN** a constructor parameter has `@Inject(SomeToken)` decorator
-- **THEN** the rule does not report an error on that parameter
-
-#### Scenario: Parameter with @Optional decorator
-- **WHEN** a constructor parameter has `@Optional()` decorator
-- **THEN** the rule does not report an error on that parameter
-
-#### Scenario: Parameter with custom decorator
-- **WHEN** a constructor parameter has any decorator (e.g., `@MyCustom()`)
-- **THEN** the rule does not report an error on that parameter
-
-#### Scenario: Mix of decorated and undecorated parameters
-- **WHEN** a constructor has 3 parameters: first with `@Inject()`, second bare, third with `@Optional()`
-- **THEN** the rule reports an error only on the second parameter
-
-### Requirement: Only apply to classes with configured decorators
+### Requirement: Only apply to classes with @Injectable decorator
 The rule SHALL NOT report errors on classes that do not have any of the configured decorator names.
 
 #### Scenario: Plain class without decorators
@@ -72,7 +55,7 @@ The rule SHALL NOT report errors on classes that do not have any of the configur
 - **WHEN** a class has a decorator not in the configured list and has bare constructor parameters
 - **THEN** the rule reports no errors
 
-### Requirement: Detect configured decorators regardless of call syntax
+### Requirement: Detect @Injectable regardless of call syntax
 The rule SHALL detect configured decorators whether called with or without parentheses, and with or without arguments.
 
 #### Scenario: Configured decorator with parentheses and no args
@@ -84,15 +67,6 @@ The rule SHALL detect configured decorators whether called with or without paren
 - **WHEN** a class is decorated with `@Controller('/api')`
 - **AND** `Controller` is in the configured decorators list
 - **THEN** the rule applies to this class
-
-### Requirement: Plugin exports recommended flat config
-The plugin SHALL export a `recommended` config that enables the `require-inject-decorator` rule at `error` severity.
-
-#### Scenario: User applies recommended config
-- **WHEN** user spreads `plugin.configs.recommended` into their ESLint flat config
-- **THEN** the rule `explicit-inject/require-inject-decorator` is enabled at "error" level
-- **THEN** the config targets `**/*.ts` files
-- **THEN** the config sets the parser to `@typescript-eslint/parser`
 
 ### Requirement: Rule metadata
 The rule SHALL have correct metadata for ESLint tooling.

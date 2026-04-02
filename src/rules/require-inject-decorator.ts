@@ -23,35 +23,60 @@ function getDecoratorName(
   return undefined;
 }
 
-function hasDecorator(
+function findMatchingDecorator(
   decorators: TSESTree.Decorator[],
-  name: string,
-): boolean {
-  return decorators.some((d) => getDecoratorName(d) === name);
+  names: string[],
+): string | undefined {
+  for (const d of decorators) {
+    const name = getDecoratorName(d);
+    if (name !== undefined && names.includes(name)) {
+      return name;
+    }
+  }
+  return undefined;
 }
 
-export const requireInjectDecorator = createRule({
+type Options = [{ decorators: string[] }];
+
+export const requireInjectDecorator = createRule<Options, "missingInject">({
   name: "require-inject-decorator",
   meta: {
     type: "problem",
     docs: {
       description:
-        "Require explicit @Inject() on constructor parameters of @Injectable() classes.",
+        "Require explicit @Inject() on constructor parameters of classes with specific decorators.",
     },
     messages: {
       missingInject:
-        "Constructor parameter '{{ name }}' in @Injectable class must have an explicit @Inject() decorator.",
+        "Constructor parameter '{{ name }}' in @{{ decorator }} class must have an explicit @Inject() decorator.",
     },
-    schema: [],
+    schema: [
+      {
+        type: "object",
+        properties: {
+          decorators: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 1,
+            uniqueItems: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
   },
-  defaultOptions: [],
+  defaultOptions: [{ decorators: ["Injectable"] }],
   create(context) {
+    const { decorators } = context.options[0] ?? { decorators: ["Injectable"] };
+
     return {
       ClassDeclaration(node) {
         if (!node.decorators?.length) {
           return;
         }
-        if (!hasDecorator(node.decorators, "Injectable")) {
+
+        const matchedDecorator = findMatchingDecorator(node.decorators, decorators);
+        if (!matchedDecorator) {
           return;
         }
 
@@ -75,7 +100,10 @@ export const requireInjectDecorator = createRule({
             context.report({
               node: param,
               messageId: "missingInject",
-              data: { name: inner.type === AST_NODE_TYPES.Identifier ? inner.name : inner.left.name },
+              data: {
+                name: inner.type === AST_NODE_TYPES.Identifier ? inner.name : inner.left.name,
+                decorator: matchedDecorator,
+              },
             });
             continue;
           }
@@ -88,7 +116,7 @@ export const requireInjectDecorator = createRule({
             context.report({
               node: param,
               messageId: "missingInject",
-              data: { name: param.name },
+              data: { name: param.name, decorator: matchedDecorator },
             });
           }
         }
